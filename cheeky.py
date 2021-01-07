@@ -1,6 +1,7 @@
 import pyttsx3
 import datetime
 import speech_recognition as sr
+import pyjokes
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -34,4 +35,7 @@ def TakeCommand():
 
 if __name__ == '__main__':
     speak('Hello Sir')
-    TakeCommand()
+    query = TakeCommand().lower()
+
+    if 'joke' in query:
+        speak(pyjokes.get_joke())
