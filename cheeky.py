@@ -2,6 +2,7 @@ import pyttsx3
 import datetime
 import speech_recognition as sr
 import pyjokes
+import webbrowser
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -19,7 +20,7 @@ def TakeCommand():
     r = sr.Recognizer()
 
     with sr.Microphone() as src:
-        print('Listening')
+        print('Listening.... speak exit to escape')
         r.pause_threshold = 1
         audio = r.listen(src)
     try:
@@ -33,9 +34,36 @@ def TakeCommand():
     return query
 
 
-if __name__ == '__main__':
-    speak('Hello Sir')
-    query = TakeCommand().lower()
+def Wish():
 
-    if 'joke' in query:
-        speak(pyjokes.get_joke())
+    hour = int(datetime.datetime.now().hour)
+    if hour >= 0 and hour < 12:
+        speak("Good Morning Chaitya !")
+
+    elif hour >= 12 and hour < 18:
+        speak("Good Afternoon Chaitya !")
+
+    else:
+        speak("Good Evening Chaitya !")
+
+    speak("I am Cheeky, your Assistant")
+
+
+if __name__ == '__main__':
+
+    Wish()
+
+    while True:
+
+        query = TakeCommand().lower()
+
+        if 'joke' in query:
+            joke = pyjokes.get_joke('en', 'neutral')
+            speak(joke)
+            print(joke)
+        elif 'open google' in query:
+            webbrowser.open('google.com')
+            speak("There you have your Google!")
+        elif 'exit' in query:
+            speak('ba bye')
+            exit()
