@@ -3,6 +3,8 @@ import datetime
 import speech_recognition as sr
 import pyjokes
 import webbrowser
+import wikipedia
+# from weather import GetWeather
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -64,6 +66,13 @@ if __name__ == '__main__':
         elif 'open google' in query:
             webbrowser.open('google.com')
             speak("There you have your Google!")
+        elif 'wikipedia' in query:
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=3)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
         elif 'exit' in query:
             speak('ba bye')
             exit()
