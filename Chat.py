@@ -1,32 +1,23 @@
 from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer
+from chatterbot.trainers import ChatterBotCorpusTrainer
 
+# Making CHatbot object
 chatbot = ChatBot(
     'Cheeky',
     storage_adapter='chatterbot.storage.SQLStorageAdapter',
-    logic_adapters=[
-        'chatterbot.logic.MathematicalEvaluation',
-        'chatterbot.logic.TimeLogicAdapter',
-        'chatterbot.logic.BestMatch'
-    ],
-    database_uri='sqlite:///database.db'
 )
 
+chatbot.initialize()
 
-trainer = ListTrainer(chatbot)
+# Make the trainer
+trainer = ChatterBotCorpusTrainer(chatbot)
+# train it
+trainer.train('chatterbot.corpus.english')
 
-trainer.train([
-    'How are you?',
-    'I am good.',
-    'That is good to hear.',
-    'Thank you',
-    'You are welcome.',
-    'Hi',
-    'Hey there',
-    'You are Awesome'
-])
+a = ''
+while a != exit:
+    a = str(input('Enter something'))
 
-a = 'How\'re you doing boi'
-# Get a response to an input statement
-r = chatbot.get_response(a).text
-print(r)
+    # Get a response to an input statement
+    r = str(chatbot.get_response(a))
+    print(r)

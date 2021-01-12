@@ -6,15 +6,20 @@ import webbrowser
 import wikipedia
 # from weather import GetWeather
 
-engine = pyttsx3.init('sapi5')
+engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')
 
+# Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
+
+# FUnction to make Cheeky speak
 
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+
+# Function to take command from user
 
 
 def TakeCommand():
@@ -35,6 +40,8 @@ def TakeCommand():
         return None
     return query
 
+# Function to wish user according to time
+
 
 def Wish():
 
@@ -52,7 +59,8 @@ def Wish():
 
 #  yet to put - hey cheeky feature to wake him
 # google search
-# chatterbot
+
+# Process and check for specific commands or talking with him
 
 
 def ProcessCommand(query):
@@ -87,6 +95,7 @@ def ProcessCommand(query):
         exit()
 
 
+# THe main function
 if __name__ == '__main__':
 
     Wish()
