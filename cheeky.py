@@ -5,6 +5,10 @@ import pyjokes
 import webbrowser
 import wikipedia
 # from weather import GetWeather
+from Talk import GetReply, InitializeBot
+
+# Initialized the chatbot stuff
+InitializeBot()
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')
@@ -12,7 +16,7 @@ voices = engine.getProperty('voices')
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
 
-# FUnction to make Cheeky speak
+# Function to make Cheeky speak
 
 
 def speak(audio):
@@ -25,19 +29,18 @@ def speak(audio):
 def TakeCommand():
 
     r = sr.Recognizer()
-
     with sr.Microphone() as src:
+        r.adjust_for_ambient_noise(src)
         print('Listening.... speak exit to escape')
-        r.pause_threshold = 1
+        r.pause_threshold = 0.5
         audio = r.listen(src)
     try:
         print('Recognizing')
         query = r.recognize_google(audio, language='en-in')
         print(f'You said {query}\n')
     except Exception as e:
-        print(e)
         print('Unable to understand')
-        return None
+        return ' '
     return query
 
 # Function to wish user according to time
@@ -47,20 +50,17 @@ def Wish():
 
     hour = int(datetime.datetime.now().hour)
     if hour >= 0 and hour < 12:
-        speak("Good Morning Chaitya !")
+        speak("Good Morning!")
 
     elif hour >= 12 and hour < 18:
-        speak("Good Afternoon Chaitya !")
+        speak("Good Afternoon!")
 
     else:
-        speak("Good Evening Chaitya !")
+        speak("Good Evening!")
 
     speak("I am Cheeky, your Assistant")
 
 #  yet to put - hey cheeky feature to wake him
-# google search
-
-# Process and check for specific commands or talking with him
 
 
 def ProcessCommand(query):
@@ -93,6 +93,12 @@ def ProcessCommand(query):
     elif 'exit' in query:
         speak('ba bye')
         exit()
+    elif query == None:
+        pass
+    else:
+        reply = GetReply(query)
+        speak(reply)
+        print(reply)
 
 
 # THe main function
@@ -101,6 +107,8 @@ if __name__ == '__main__':
     Wish()
 
     while True:
-
-        query = TakeCommand().lower()
-        ProcessCommand(query)
+        try:
+            query = TakeCommand().lower()
+            ProcessCommand(query)
+        except Exception:
+            pass
