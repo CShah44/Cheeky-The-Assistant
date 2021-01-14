@@ -9,8 +9,6 @@ chatbot = ChatBot(
 
 
 def InitializeBot():
-    print('a')
-    chatbot.initialize()
     # Make the trainer
     trainer = ChatterBotCorpusTrainer(chatbot)
     # train it

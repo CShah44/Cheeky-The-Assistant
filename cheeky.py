@@ -7,14 +7,16 @@ import wikipedia
 # from weather import GetWeather
 from Talk import GetReply, InitializeBot
 
-# Initialized the chatbot stuff
-InitializeBot()
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')
 
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
+
+
+# Initialized the chatbot stuff
+InitializeBot()
 
 # Function to make Cheeky speak
 
