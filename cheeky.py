@@ -6,10 +6,28 @@ import webbrowser
 import wikipedia
 # from weather import GetWeather
 from Talk import GetReply, InitializeBot
-
+import random
+from tkinter import *
+from PIL import ImageTk, Image
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')
+
+# Tkinter Initialization stuff
+root = Tk()
+root.title('Cheeky - The Assistant')
+root.geometry('1300x650')
+root.resizable(False, False)
+
+# Set the 'test' background
+# Specifying Background image path
+img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
+# Still in test phase
+bg = Label(root, image=img)
+bg.place(x=0, y=0)
+bg.pack()
+
+root.mainloop()  # Mainloop method so that GUI is seen
 
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
@@ -33,7 +51,6 @@ def TakeCommand():
     r = sr.Recognizer()
     with sr.Microphone() as src:
         r.adjust_for_ambient_noise(src)
-        print('Listening.... speak exit to escape')
         r.pause_threshold = 0.5
         audio = r.listen(src)
     try:
@@ -103,14 +120,26 @@ def ProcessCommand(query):
         print(reply)
 
 
+WakeMsg = "hello world"
+query = ''
+WakeRes = ['I am listening', 'Cheeky is ready',
+           'What do you want?', 'On your command sir!']
+
 # THe main function
 if __name__ == '__main__':
 
     Wish()
 
     while True:
-        try:
-            query = TakeCommand().lower()
-            ProcessCommand(query)
-        except Exception:
-            pass
+
+        print('Listening')
+
+        query = TakeCommand().lower()
+
+        if query.count(WakeMsg) > 0:
+            r = random.choice(WakeRes)
+            speak(r)
+            try:
+                ProcessCommand(query)
+            except Exception:
+                pass
