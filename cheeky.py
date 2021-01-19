@@ -11,7 +11,9 @@ from tkinter import *
 from PIL import ImageTk, Image
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
-voices = engine.getProperty('voices')
+voices = engine.getProperty('voices')  # Getting all the available voices
+# Setting CHeeky's Voice
+engine.setProperty('voice', voices[0].id)
 
 # Tkinter Initialization stuff
 root = Tk()
@@ -29,16 +31,8 @@ bg.pack()
 
 root.mainloop()  # Mainloop method so that GUI is seen
 
-# Setting CHeeky's Voice
-engine.setProperty('voice', voices[0].id)
-
-
-# Initialized the chatbot stuff
-InitializeBot()
 
 # Function to make Cheeky speak
-
-
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
@@ -79,8 +73,6 @@ def Wish():
 
     speak("I am Cheeky, your Assistant")
 
-#  yet to put - hey cheeky feature to wake him
-
 
 def ProcessCommand(query):
     if 'joke' in query:
@@ -88,20 +80,24 @@ def ProcessCommand(query):
         speak(joke)
         print(joke)
     elif 'open google' in query:
-        webbrowser.open('google.com')
+        webbrowser.open_new_tab('google.com')
         speak("There you have your Google!")
     elif 'open youtube' in query:
-        webbrowser.open('youtube.com')
+        webbrowser.open_new_tab('youtube.com')
         speak('Here\'s your Youtube')
     elif 'open github' in query:
-        webbrowser.open('github.com')
+        webbrowser.open_new_tab('github.com')
         speak('Take your Github, Developer!')
     elif 'open stackoverflow' in query:
-        webbrowser.open('stackoverflow.com')
-        speak('Ask your question on Stackoverflow now')
+        webbrowser.open_new_tab('stackoverflow.com')
+        speak('Ask your questions on Stackoverflow now')
     elif 'time' in query:
         strTime = datetime.datetime.now().strftime("%H:%M:%S")
         speak(f"The time is {strTime}")
+    elif 'google' in query:
+        query = query.replace('google')
+        webbrowser.open_new_tab('https://www.google.com/search?q=' + query)
+        speak('Check your google.. I searched for you')
     elif 'wikipedia' in query:
         speak('Searching Wikipedia...')
         query = query.replace("wikipedia", "")
@@ -128,6 +124,9 @@ WakeRes = ['I am listening', 'Cheeky is ready',
 # THe main function
 if __name__ == '__main__':
 
+    # Initialized the chatbot stuff
+    InitializeBot()
+    # Wishing User
     Wish()
 
     while True:
