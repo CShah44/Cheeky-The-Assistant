@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 
 def RequestURL():
@@ -21,3 +22,10 @@ def GetWeather():
         'div', class_='CurrentConditions--phraseValue--2xXSr').text
 
     return currentWeather, typeWeather
+
+
+def GetDate():
+    now = datetime.datetime.now()
+    day = now.strftime('%A')
+    date = now.strftime('%d %b')
+    return day, date

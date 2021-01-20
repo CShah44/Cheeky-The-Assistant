@@ -4,7 +4,7 @@ import speech_recognition as sr
 import pyjokes
 import webbrowser
 import wikipedia
-# from weather import GetWeather
+from weather import GetWeather, GetDate
 from Talk import GetReply, InitializeBot
 import random
 from tkinter import *
@@ -24,10 +24,22 @@ root.resizable(False, False)
 # Set the 'test' background
 # Specifying Background image path
 img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
-# Still in test phase
+# TODO - Still in test phase
 bg = Label(root, image=img)
 bg.place(x=0, y=0)
 bg.pack()
+
+tempLabel = Label(root, text=GetWeather()[0], font=('Dosis SemiBold', 25))
+# tempLabel.place(x=5, y=75)
+tempLabel.pack()
+
+dayLabel = Label(root, text=GetDate()[0], font=('Dosis SemiBold', 20))
+# dayLabel.place(x=5, y=40)
+dayLabel.pack()
+
+dateLabel = Label(root, text=GetDate()[1], font=('Dosis SemiBold', 20))
+# dateLabel.place(x=5, y=25)
+dateLabel.pack()
 
 root.mainloop()  # Mainloop method so that GUI is seen
 
@@ -116,6 +128,11 @@ def ProcessCommand(query):
         print(reply)
 
 
+def SetInfo():
+    pass
+    # TODO - Set labels with value of weather, date, day, news, etc.
+
+
 WakeMsg = "hello world"
 query = ''
 WakeRes = ['I am listening', 'Cheeky is ready',
@@ -128,12 +145,14 @@ if __name__ == '__main__':
     InitializeBot()
     # Wishing User
     Wish()
+    # Initializing Labels with weather, news, date data
+    SetInfo()
 
     while True:
 
-        print('Listening')
+        print('Listening')  # TODO - print listening to a label not on console
 
-        query = TakeCommand().lower()
+        # query = TakeCommand().lower()
 
         if query.count(WakeMsg) > 0:
             r = random.choice(WakeRes)
