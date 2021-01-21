@@ -15,33 +15,23 @@ voices = engine.getProperty('voices')  # Getting all the available voices
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
 
-# Tkinter Initialization stuff
-root = Tk()
-root.title('Cheeky - The Assistant')
-root.geometry('1300x650')
-root.resizable(False, False)
 
-# Set the 'test' background
-# Specifying Background image path
-img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
-# TODO - Still in test phase
-bg = Label(root, image=img)
-bg.place(x=0, y=0)
-bg.pack()
+def MainGUI():
+    # Tkinter Initialization stuff
+    root = Tk()
+    root.title('Cheeky - The Assistant')
+    root.geometry('1300x650')
+    root.resizable(False, False)
 
-tempLabel = Label(root, text=GetWeather()[0], font=('Dosis SemiBold', 25))
-# tempLabel.place(x=5, y=75)
-tempLabel.pack()
+    # Set the 'test' background
+    canvas = Canvas(root)  # creating canvas for all widgets to be placed on it
+    canvas.config(width=1300, height=650)  # set sizes of canvas
 
-dayLabel = Label(root, text=GetDate()[0], font=('Dosis SemiBold', 20))
-# dayLabel.place(x=5, y=40)
-dayLabel.pack()
+    # Specifying Background image path
+    img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
+    canvas.create_image(0, 0, image=img, anchor='nw')  # create background img
 
-dateLabel = Label(root, text=GetDate()[1], font=('Dosis SemiBold', 20))
-# dateLabel.place(x=5, y=25)
-dateLabel.pack()
-
-root.mainloop()  # Mainloop method so that GUI is seen
+    root.mainloop()  # Mainloop method so that GUI is seen
 
 
 # Function to make Cheeky speak
@@ -141,12 +131,14 @@ WakeRes = ['I am listening', 'Cheeky is ready',
 # THe main function
 if __name__ == '__main__':
 
-    # Initialized the chatbot stuff
-    InitializeBot()
+    # Make the gui
+    MainGUI()
     # Wishing User
     Wish()
     # Initializing Labels with weather, news, date data
     SetInfo()
+    # Initialized the chatbot stuff
+    InitializeBot()
 
     while True:
 
