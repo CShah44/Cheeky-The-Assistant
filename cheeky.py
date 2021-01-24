@@ -9,6 +9,7 @@ from Talk import GetReply, InitializeBot
 import random
 from tkinter import *
 from PIL import ImageTk, Image
+from News import GetNews
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')  # Getting all the available voices
@@ -23,6 +24,8 @@ def MainGUI():
     root.geometry('1300x650')
     root.resizable(False, False)
 
+    newsLabels = []  # List of all buttons containing news
+
     # Set the 'test' background
     canvas = Canvas(root)  # creating canvas for all widgets to be placed on it
     canvas.config(width=1300, height=650)  # set sizes of canvas
@@ -31,6 +34,34 @@ def MainGUI():
     img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
     canvas.create_image(0, 0, image=img, anchor='nw')  # create background img
 
+    temp = GetWeather()[0]
+    tempLabel = canvas.create_text(
+        100, 370, text=temp, font=('Dosis SemiBold', 75))
+
+    weatherType = GetWeather()[1]
+    weatherTypeLabel = canvas.create_text(
+        80, 445, text=weatherType, font=('Dosis SemiBold', 30))
+
+    dateText = GetDate()[0] + ' ' + GetDate()[1]
+    dateLabel = canvas.create_text(
+        100, 550, text=dateText, font=('Dosis SemiBold', 30))
+
+    wishUserLabel = canvas.create_text(
+        20, 170, text='Good Afternoon!', anchor='nw',  font=('Dosis SemiBold', 30))
+
+    # creating the news buttons
+    y = 80  # y co-ordinate of buttons
+    for index in range(0, 5):
+        title = GetNews()[index][0]
+        link = GetNews()[index][1]
+
+        b = Button(root, text=title,
+                   font=('Dosis SemiBold', 12), width=31, wraplength=250, justify='center', bg='blue', fg='white')
+        b_window = canvas.create_window(1027, y, window=b, anchor='nw')
+        y += 110
+        newsLabels.append(b)
+
+    canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
     root.mainloop()  # Mainloop method so that GUI is seen
 
 
@@ -123,7 +154,7 @@ def SetInfo():
     # TODO - Set labels with value of weather, date, day, news, etc.
 
 
-WakeMsg = "hello world"
+WakeMsg = "wake up"
 query = ''
 WakeRes = ['I am listening', 'Cheeky is ready',
            'What do you want?', 'On your command sir!']
@@ -135,10 +166,6 @@ if __name__ == '__main__':
     MainGUI()
     # Wishing User
     Wish()
-    # Initializing Labels with weather, news, date data
-    SetInfo()
-    # Initialized the chatbot stuff
-    InitializeBot()
 
     while True:
 

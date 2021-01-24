@@ -26,6 +26,6 @@ def GetWeather():
 
 def GetDate():
     now = datetime.datetime.now()
-    day = now.strftime('%A')
+    day = now.strftime('%a')
     date = now.strftime('%d %b')
     return day, date
