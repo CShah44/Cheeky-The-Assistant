@@ -17,7 +17,7 @@ voices = engine.getProperty('voices')  # Getting all the available voices
 engine.setProperty('voice', voices[0].id)
 
 
-def MainGUI():
+def Main():
     # Tkinter Initialization stuff
     root = Tk()
     root.title('Cheeky - The Assistant')
@@ -44,10 +44,38 @@ def MainGUI():
 
     dateText = GetDate()[0] + ' ' + GetDate()[1]
     dateLabel = canvas.create_text(
-        100, 550, text=dateText, font=('Dosis SemiBold', 30))
+        110, 500, text=dateText, font=('Dosis SemiBold', 30))
 
     wishUserLabel = canvas.create_text(
         20, 170, text='Good Afternoon!', anchor='nw',  font=('Dosis SemiBold', 30))
+
+    infoLabel = canvas.create_text(
+        1027, 610, text='(Click the article to read it)', anchor='nw',  font=('Dosis SemiBold', 14), fill='white')
+
+    # TODO- It will open a new window
+    about_help_button = Button(root, text='About/Help', font=(
+        'Dosis SemiBold', 20), width=15)
+    about_help_button_window = canvas.create_window(
+        130, 600, window=about_help_button)
+
+    status_label = canvas.create_text(
+        650, 40, text='Sleeping', font=('Dosis SemiBold', 20))
+    # canvas.itemconfigure(status_label, text='Awake')
+
+    send_command_button = Button(root, text='Send', font=(
+        'Dosis SemiBold', 20), width=6)
+    send_command_button_window = canvas.create_window(
+        955, 600, window=send_command_button)
+
+    command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
+    command_entry_window = canvas.create_window(
+        300, 590, window=command_entry, anchor='nw')
+
+    you_label = canvas.create_text(
+        930, 80, text='YOU', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
+
+    bot_label = canvas.create_text(
+        300, 280, text='CHEEKY', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
 
     # creating the news buttons
     y = 80  # y co-ordinate of buttons
@@ -60,6 +88,9 @@ def MainGUI():
         b_window = canvas.create_window(1027, y, window=b, anchor='nw')
         y += 110
         newsLabels.append(b)
+
+    # Wishing User
+    Wish()
 
     canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
     root.mainloop()  # Mainloop method so that GUI is seen
@@ -149,11 +180,6 @@ def ProcessCommand(query):
         print(reply)
 
 
-def SetInfo():
-    pass
-    # TODO - Set labels with value of weather, date, day, news, etc.
-
-
 WakeMsg = "wake up"
 query = ''
 WakeRes = ['I am listening', 'Cheeky is ready',
@@ -163,15 +189,13 @@ WakeRes = ['I am listening', 'Cheeky is ready',
 if __name__ == '__main__':
 
     # Make the gui
-    MainGUI()
-    # Wishing User
-    Wish()
+    Main()
 
-    while True:
+    while True:  # TODO - Move it to main function
 
         print('Listening')  # TODO - print listening to a label not on console
 
-        # query = TakeCommand().lower()
+        query = TakeCommand().lower()
 
         if query.count(WakeMsg) > 0:
             r = random.choice(WakeRes)
