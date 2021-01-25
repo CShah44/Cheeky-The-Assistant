@@ -16,23 +16,77 @@ voices = engine.getProperty('voices')  # Getting all the available voices
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
 
+# Tkinter Initialization stuff
+root = Tk()
+root.title('Cheeky - The Assistant')
+root.geometry('1300x650')
+root.resizable(False, False)
 
-def Main():
-    # Tkinter Initialization stuff
-    root = Tk()
-    root.title('Cheeky - The Assistant')
-    root.geometry('1300x650')
-    root.resizable(False, False)
+# Set the 'test' background
+canvas = Canvas(root)  # creating canvas for all widgets to be placed on it
+canvas.config(width=1300, height=650)  # set sizes of canvas
+
+# Specifying Background image path
+img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
+canvas.create_image(0, 0, image=img, anchor='nw')  # create background img
+
+# TODO- It will open a new window
+about_help_button = Button(root, text='About/Help', font=(
+    'Dosis SemiBold', 20), width=15)
+about_help_button_window = canvas.create_window(
+    130, 600, window=about_help_button)
+
+status_label = canvas.create_text(
+    650, 40, text='Sleeping', font=('Dosis SemiBold', 20))
+# canvas.itemconfigure(status_label, text='Awake')
+
+send_command_button = Button(root, text='Send', font=(
+    'Dosis SemiBold', 20), width=6, command=lambda: GetInput())
+send_command_button_window = canvas.create_window(
+    955, 600, window=send_command_button)
+
+command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
+command_entry_window = canvas.create_window(
+    300, 590, window=command_entry, anchor='nw')
+command_entry.insert(0, "Type Something")
+
+you_label = canvas.create_text(
+    930, 80, text='YOU', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
+
+# label containing user's command :]
+user_command_label = canvas.create_text(
+    360, 120, text='Start by waking Cheeky up and give him commands or start typing, e.g.: open google, open wikipedia or just chat with him',
+    anchor='nw',  font=('Dosis SemiBold', 20), fill='white', width=640, justify='right')
+
+bot_label = canvas.create_text(
+    300, 280, text='CHEEKY', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
+
+# The reply label of cheeky's response
+bot_command_label = canvas.create_text(
+    305, 330, text='I am sleeping, wake me up to start talking with me buddy.. You know I\'m very smart and smart bois need more sleep',
+    anchor='nw',  font=('Dosis SemiBold', 20), fill='white', width=640)
+
+# clears the entry window when it loses focus
+
+
+def ClearEntry(e):
+    command_entry.delete(0, END)
+
+# sets the placeholder text for th eentry widget
+
+
+def SetEntryPlaceholder(e):
+    command_entry.insert(0, "Type Something")
+
+
+# defining events for entry widget : Losing And Getting Focus
+command_entry.bind("<FocusIn>", ClearEntry)
+command_entry.bind("<FocusOut>", SetEntryPlaceholder)
+
+
+def MainGUI():
 
     newsLabels = []  # List of all buttons containing news
-
-    # Set the 'test' background
-    canvas = Canvas(root)  # creating canvas for all widgets to be placed on it
-    canvas.config(width=1300, height=650)  # set sizes of canvas
-
-    # Specifying Background image path
-    img = ImageTk.PhotoImage(Image.open('E:\Timathon\BGTEST.png'))
-    canvas.create_image(0, 0, image=img, anchor='nw')  # create background img
 
     temp = GetWeather()[0]
     tempLabel = canvas.create_text(
@@ -52,31 +106,6 @@ def Main():
     infoLabel = canvas.create_text(
         1027, 610, text='(Click the article to read it)', anchor='nw',  font=('Dosis SemiBold', 14), fill='white')
 
-    # TODO- It will open a new window
-    about_help_button = Button(root, text='About/Help', font=(
-        'Dosis SemiBold', 20), width=15)
-    about_help_button_window = canvas.create_window(
-        130, 600, window=about_help_button)
-
-    status_label = canvas.create_text(
-        650, 40, text='Sleeping', font=('Dosis SemiBold', 20))
-    # canvas.itemconfigure(status_label, text='Awake')
-
-    send_command_button = Button(root, text='Send', font=(
-        'Dosis SemiBold', 20), width=6)
-    send_command_button_window = canvas.create_window(
-        955, 600, window=send_command_button)
-
-    command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
-    command_entry_window = canvas.create_window(
-        300, 590, window=command_entry, anchor='nw')
-
-    you_label = canvas.create_text(
-        930, 80, text='YOU', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
-
-    bot_label = canvas.create_text(
-        300, 280, text='CHEEKY', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
-
     # creating the news buttons
     y = 80  # y co-ordinate of buttons
     for index in range(0, 5):
@@ -84,7 +113,7 @@ def Main():
         link = GetNews()[index][1]
 
         b = Button(root, text=title,
-                   font=('Dosis SemiBold', 12), width=31, wraplength=250, justify='center', bg='blue', fg='white')
+                   font=('Dosis SemiBold', 12), width=31, wraplength=250, justify='center', bg='blue', fg='white', command=lambda: OpenNews(link))
         b_window = canvas.create_window(1027, y, window=b, anchor='nw')
         y += 110
         newsLabels.append(b)
@@ -95,8 +124,29 @@ def Main():
     canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
     root.mainloop()  # Mainloop method so that GUI is seen
 
+# Function to open the news on the web
+
+
+def OpenNews(link):
+    webbrowser.open(link)
+    return "Opened news article"
+
+# Function to get input from the input field
+
+
+def GetInput():
+    query = command_entry.get().lower()  # Get the command of user from entry box
+    if query:
+        ProcessCommand(query)  # Process the command
+        command_entry.delete(0, END)  # Clearing the entry widget
+        # Setting the default text again
+        command_entry.insert(0, "Type Something")
+    return "Got input"
+
 
 # Function to make Cheeky speak
+
+
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
@@ -137,12 +187,25 @@ def Wish():
 
     speak("I am Cheeky, your Assistant")
 
+# Printing User's command on the screen
+
+
+def PrintUserCommand(c):
+    canvas.itemconfigure(user_command_label, text=c, justify='right')
+
+# Printing cheeky's reply on the screen
+
+
+def PrintBotReply(r):
+    canvas.itemconfigure(bot_command_label, text=r, justify='left')
+
 
 def ProcessCommand(query):
+    PrintUserCommand(query)
     if 'joke' in query:
         joke = pyjokes.get_joke('en', 'neutral')
         speak(joke)
-        print(joke)
+        PrintBotReply(joke)
     elif 'open google' in query:
         webbrowser.open_new_tab('google.com')
         speak("There you have your Google!")
@@ -165,9 +228,9 @@ def ProcessCommand(query):
     elif 'wikipedia' in query:
         speak('Searching Wikipedia...')
         query = query.replace("wikipedia", "")
-        results = wikipedia.summary(query, sentences=4)
+        results = wikipedia.summary(query, sentences=3)
         speak("According to Wikipedia")
-        print(results)
+        PrintBotReply(results)
         speak(results)
     elif 'exit' in query:
         speak('ba bye')
@@ -177,7 +240,7 @@ def ProcessCommand(query):
     else:
         reply = GetReply(query)
         speak(reply)
-        print(reply)
+        PrintBotReply(reply)
 
 
 WakeMsg = "wake up"
@@ -189,18 +252,18 @@ WakeRes = ['I am listening', 'Cheeky is ready',
 if __name__ == '__main__':
 
     # Make the gui
-    Main()
+    MainGUI()
 
-    while True:  # TODO - Move it to main function
+    # while True:  # TODO - Move it to main function
 
-        print('Listening')  # TODO - print listening to a label not on console
+    #     print('Listening')  # TODO - print listening to a label not on console
 
-        query = TakeCommand().lower()
+    #     query = TakeCommand().lower()
 
-        if query.count(WakeMsg) > 0:
-            r = random.choice(WakeRes)
-            speak(r)
-            try:
-                ProcessCommand(query)
-            except Exception:
-                pass
+    #     if query.count(WakeMsg) > 0:
+    #         r = random.choice(WakeRes)
+    #         speak(r)
+    #         try:
+    #             ProcessCommand(query)
+    #         except Exception:
+    #             pass
