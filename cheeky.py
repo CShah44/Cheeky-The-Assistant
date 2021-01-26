@@ -10,6 +10,8 @@ import random
 from tkinter import *
 from PIL import ImageTk, Image
 from News import GetNews
+import time
+import subprocess
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')  # Getting all the available voices
@@ -225,6 +227,18 @@ def ProcessCommand(query):
         query = query.replace('google')
         webbrowser.open_new_tab('https://www.google.com/search?q=' + query)
         speak('Check your google.. I searched for you')
+    elif "restart" in query:
+        subprocess.call(["shutdown", "/r"])
+    elif "hibernate" in query or "sleep" in query:
+        speak("Hibernating")
+        subprocess.call("shutdown / h")
+    elif "log off" in query or "sign out" in query:
+        speak("Close all apps as I'll log off in 10 seconds")
+        time.sleep(5)
+        subprocess.call(["shutdown", "/l"])
+    elif 'shutdown' in query:
+        speak("ok, I am shutting down your pc")
+        subprocess.call('shutdown / p /f')
     elif 'wikipedia' in query:
         speak('Searching Wikipedia...')
         query = query.replace("wikipedia", "")
@@ -232,9 +246,10 @@ def ProcessCommand(query):
         speak("According to Wikipedia")
         PrintBotReply(results)
         speak(results)
+    # TODO - Exit function
     elif 'exit' in query:
         speak('ba bye')
-        exit()
+        # exit()
     elif query == None:
         pass
     else:
