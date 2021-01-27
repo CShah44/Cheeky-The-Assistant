@@ -18,6 +18,8 @@ voices = engine.getProperty('voices')  # Getting all the available voices
 # Setting CHeeky's Voice
 engine.setProperty('voice', voices[0].id)
 
+canListen = False
+
 # Tkinter Initialization stuff
 root = Tk()
 root.title('Cheeky - The Assistant')
@@ -120,11 +122,11 @@ def MainGUI():
         y += 110
         newsLabels.append(b)
 
-    # Wishing User
-    Wish()
-
     canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
     root.mainloop()  # Mainloop method so that GUI is seen
+
+    # Wishing User
+    Wish()
 
 # Function to open the news on the web
 
@@ -201,6 +203,12 @@ def PrintUserCommand(c):
 def PrintBotReply(r):
     canvas.itemconfigure(bot_command_label, text=r, justify='left')
 
+# Changes the text of the status label. (Awake, Listening, Sleeping, Recognizing)
+
+
+def ChangeBotStatus(s):
+    canvas.itemconfigure(status_label, text=s)
+
 
 def ProcessCommand(query):
     PrintUserCommand(query)
@@ -242,7 +250,7 @@ def ProcessCommand(query):
     elif 'wikipedia' in query:
         speak('Searching Wikipedia...')
         query = query.replace("wikipedia", "")
-        results = wikipedia.summary(query, sentences=3)
+        results = wikipedia.summary(query, sentences=2)
         speak("According to Wikipedia")
         PrintBotReply(results)
         speak(results)
@@ -269,16 +277,16 @@ if __name__ == '__main__':
     # Make the gui
     MainGUI()
 
-    # while True:  # TODO - Move it to main function
+    while True:  # TODO - Move it to main function
 
-    #     print('Listening')  # TODO - print listening to a label not on console
+        print('Listening')  # TODO - print listening to a label not on console
 
-    #     query = TakeCommand().lower()
+        query = TakeCommand().lower()
 
-    #     if query.count(WakeMsg) > 0:
-    #         r = random.choice(WakeRes)
-    #         speak(r)
-    #         try:
-    #             ProcessCommand(query)
-    #         except Exception:
-    #             pass
+        if query.count(WakeMsg) > 0:
+            r = random.choice(WakeRes)
+            speak(r)
+            try:
+                ProcessCommand(query)
+            except Exception:
+                pass
