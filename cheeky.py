@@ -5,7 +5,7 @@ import pyjokes
 import webbrowser
 import wikipedia
 from weather import GetWeather, GetDate
-from Talk import GetReply, InitializeBot
+from Talk import GetReply
 import random
 from tkinter import *
 from PIL import ImageTk, Image
@@ -15,7 +15,7 @@ import subprocess
 
 engine = pyttsx3.init('sapi5')  # sapi5 = speech api
 voices = engine.getProperty('voices')  # Getting all the available voices
-# Setting CHeeky's Voice
+# Setting Cheeky's Voice
 engine.setProperty('voice', voices[0].id)
 
 canListen = False
@@ -44,122 +44,78 @@ status_label = canvas.create_text(
     650, 40, text='Sleeping', font=('Dosis SemiBold', 20))
 # canvas.itemconfigure(status_label, text='Awake')
 
-send_command_button = Button(root, text='Send', font=(
-    'Dosis SemiBold', 20), width=6, command=lambda: GetInput())
-send_command_button_window = canvas.create_window(
-    955, 600, window=send_command_button)
+i = ImageTk.PhotoImage(Image.open("activate.png"))
+activate_button = Button(root, text='Δ', font=(
+        'Dosis SemiBold', 20), width=30, height=30, borderwidth=0.5, image=i)
+activate_button_window = canvas.create_window(
+        750, 42, window=activate_button)
 
-command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
-command_entry_window = canvas.create_window(
-    300, 590, window=command_entry, anchor='nw')
-command_entry.insert(0, "Type Something")
+def activate_cheeky(e):
+    clear_entry('e')
+    canvas.itemconfigure(status_label, text='Listening')
+    print('working boss')
+    try:
+        query = take_command().lower()
+        process_command(query)
+    except Exception:
+        print('RETRY')
 
-you_label = canvas.create_text(
-    930, 80, text='YOU', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
-
-# label containing user's command :]
-user_command_label = canvas.create_text(
-    360, 120, text='Start by waking Cheeky up and give him commands or start typing, e.g.: open google, open wikipedia or just chat with him',
-    anchor='nw',  font=('Dosis SemiBold', 20), fill='white', width=640, justify='right')
-
-bot_label = canvas.create_text(
-    300, 280, text='CHEEKY', anchor='nw',  font=('Dosis SemiBold', 25), fill='white')
-
-# The reply label of cheeky's response
-bot_command_label = canvas.create_text(
-    305, 330, text='I am sleeping, wake me up to start talking with me buddy.. You know I\'m very smart and smart bois need more sleep',
-    anchor='nw',  font=('Dosis SemiBold', 20), fill='white', width=640)
+def deactivate_cheeky(e):
+    canvas.itemconfigure(status_label, text='Sleeping')
+    canListen = False
 
 # clears the entry window when it loses focus
-
-
-def ClearEntry(e):
+def clear_entry(e):
     command_entry.delete(0, END)
 
+
 # sets the placeholder text for th eentry widget
-
-
-def SetEntryPlaceholder(e):
+def set_entry_placeholder(e):
     command_entry.insert(0, "Type Something")
 
+# Function to make Cheeky speak
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
 
-# defining events for entry widget : Losing And Getting Focus
-command_entry.bind("<FocusIn>", ClearEntry)
-command_entry.bind("<FocusOut>", SetEntryPlaceholder)
+def change_wish_text(t):
+    canvas.itemconfigure(wish_user_label, text=t)
 
+# Function to wish user according to time
+def wish():
+    hour = int(datetime.datetime.now().hour)
+    w = ''
+    if hour >= 0 and hour < 12:
+        w = 'Good Morning!'
 
-def MainGUI():
+    elif hour >= 12 and hour < 18:
+        w = 'Good Afternoon'
 
-    newsLabels = []  # List of all buttons containing news
+    else:
+        w = 'Good Evening'
 
-    temp = GetWeather()[0]
-    tempLabel = canvas.create_text(
-        100, 370, text=temp, font=('Dosis SemiBold', 75))
-
-    weatherType = GetWeather()[1]
-    weatherTypeLabel = canvas.create_text(
-        80, 445, text=weatherType, font=('Dosis SemiBold', 30))
-
-    dateText = GetDate()[0] + ' ' + GetDate()[1]
-    dateLabel = canvas.create_text(
-        110, 500, text=dateText, font=('Dosis SemiBold', 30))
-
-    wishUserLabel = canvas.create_text(
-        20, 170, text='Good Afternoon!', anchor='nw',  font=('Dosis SemiBold', 30))
-
-    infoLabel = canvas.create_text(
-        1027, 610, text='(Click the article to read it)', anchor='nw',  font=('Dosis SemiBold', 14), fill='white')
-
-    # creating the news buttons
-    y = 80  # y co-ordinate of buttons
-    for index in range(0, 5):
-        title = GetNews()[index][0]
-        link = GetNews()[index][1]
-
-        b = Button(root, text=title,
-                   font=('Dosis SemiBold', 12), width=31, wraplength=250, justify='center', bg='blue', fg='white', command=lambda: OpenNews(link))
-        b_window = canvas.create_window(1027, y, window=b, anchor='nw')
-        y += 110
-        newsLabels.append(b)
-
-    canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
-    root.mainloop()  # Mainloop method so that GUI is seen
-
-    # Wishing User
-    Wish()
+    change_wish_text(w)
+    speak(w + "I am Cheeky, your Assistant")
 
 # Function to open the news on the web
-
-
-def OpenNews(link):
+def open_news(link):
     webbrowser.open(link)
     return "Opened news article"
 
+
+
 # Function to get input from the input field
-
-
-def GetInput():
+def get_input():
     query = command_entry.get().lower()  # Get the command of user from entry box
     if query:
-        ProcessCommand(query)  # Process the command
+        process_command(query)  # Process the command
         command_entry.delete(0, END)  # Clearing the entry widget
         # Setting the default text again
         command_entry.insert(0, "Type Something")
     return "Got input"
 
-
-# Function to make Cheeky speak
-
-
-def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
-
 # Function to take command from user
-
-
-def TakeCommand():
-
+def take_command():
     r = sr.Recognizer()
     with sr.Microphone() as src:
         r.adjust_for_ambient_noise(src)
@@ -174,48 +130,27 @@ def TakeCommand():
         return ' '
     return query
 
-# Function to wish user according to time
-
-
-def Wish():
-
-    hour = int(datetime.datetime.now().hour)
-    if hour >= 0 and hour < 12:
-        speak("Good Morning!")
-
-    elif hour >= 12 and hour < 18:
-        speak("Good Afternoon!")
-
-    else:
-        speak("Good Evening!")
-
-    speak("I am Cheeky, your Assistant")
-
 # Printing User's command on the screen
+def print_user_command(c):
+    canvas.itemconfigure(user_command_label, text=c, justify=RIGHT)
 
-
-def PrintUserCommand(c):
-    canvas.itemconfigure(user_command_label, text=c, justify='right')
 
 # Printing cheeky's reply on the screen
-
-
-def PrintBotReply(r):
+def print_bot_reply(r):
     canvas.itemconfigure(bot_command_label, text=r, justify='left')
 
+
 # Changes the text of the status label. (Awake, Listening, Sleeping, Recognizing)
-
-
-def ChangeBotStatus(s):
+def change_bot_status(s):
     canvas.itemconfigure(status_label, text=s)
 
 
-def ProcessCommand(query):
-    PrintUserCommand(query)
+def process_command(query):
+    print_user_command(query)
     if 'joke' in query:
         joke = pyjokes.get_joke('en', 'neutral')
         speak(joke)
-        PrintBotReply(joke)
+        print_bot_reply(joke)
     elif 'open google' in query:
         webbrowser.open_new_tab('google.com')
         speak("There you have your Google!")
@@ -252,18 +187,97 @@ def ProcessCommand(query):
         query = query.replace("wikipedia", "")
         results = wikipedia.summary(query, sentences=2)
         speak("According to Wikipedia")
-        PrintBotReply(results)
+        print_bot_reply(results)
         speak(results)
     # TODO - Exit function
     elif 'exit' in query:
         speak('ba bye')
-        # exit()
-    elif query == None:
-        pass
+        exit()
+    elif "locate" in query:
+        query = query.replace("locate", "")
+        location = query
+        speak("So I am locating.. ")
+        speak(location)
+        webbrowser.open("https://www.google.nl / maps / place/" + location + "")
     else:
         reply = GetReply(query)
         speak(reply)
-        PrintBotReply(reply)
+        print_bot_reply(reply)
+
+root.bind('<KeyRelease-c>', deactivate_cheeky)
+
+root.bind('<KeyPress-c>', activate_cheeky)
+
+command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
+command_entry_window = canvas.create_window(
+    300, 590, window=command_entry, anchor='nw')
+command_entry.insert(0, "Type Something")
+
+you_label = canvas.create_text(
+    930, 80, text='YOU', anchor='nw', font=('Dosis SemiBold', 25), fill='white')
+
+# label containing user's command :]
+user_command_label = canvas.create_text(
+    980, 120,
+    text='Start by waking Cheeky up and give him commands or start typing, e.g.: open google, open wikipedia or just chat with him',
+    anchor='ne', font=('Dosis SemiBold', 20), fill='white', width=640, justify=RIGHT)
+
+bot_label = canvas.create_text(
+    300, 280, text='CHEEKY', anchor='nw', font=('Dosis SemiBold', 25), fill='white')
+
+# The reply label of cheeky's response
+bot_command_label = canvas.create_text(
+    305, 330,
+    text='I am sleeping, wake me up to start talking with me buddy.. You know I\'m very smart and smart bois need more sleep',
+    anchor='nw', font=('Dosis SemiBold', 20), fill='white', width=640)
+
+# defining events for entry widget : Losing And Getting Focus
+command_entry.bind("<FocusIn>", clear_entry)
+command_entry.bind("<FocusOut>", set_entry_placeholder)
+
+send_command_button = Button(root, text='Send', font=(
+    'Dosis SemiBold', 20), width=6, command=lambda: get_input())
+send_command_button_window = canvas.create_window(
+    955, 600, window=send_command_button)
+
+news_labels = []  # List of all buttons containing news
+
+temp = GetWeather()[0]
+temp_label = canvas.create_text(
+    100, 370, text=temp, font=('Dosis SemiBold', 75))
+
+weather_type = GetWeather()[1]
+weather_type_label = canvas.create_text(
+    80, 445, text=weather_type, font=('Dosis SemiBold', 30))
+
+date_text = GetDate()[0] + ' ' + GetDate()[1]
+date_label = canvas.create_text(
+    110, 500, text=date_text, font=('Dosis SemiBold', 30))
+
+wish_user_label = canvas.create_text(
+    20, 170, text='Good Afternoon!', anchor='nw', font=('Dosis SemiBold', 30))
+
+info_label = canvas.create_text(
+    1027, 610, text='(Click the article to read it)', anchor='nw', font=('Dosis SemiBold', 14), fill='white')
+
+# creating the news buttons
+y = 80  # y co-ordinate of buttons
+for index in range(0, 5):
+    title = GetNews()[index][0]
+    link = GetNews()[index][1]
+
+    b = Button(root, text=title, bg = '#618ec2',
+            font=('Dosis SemiBold', 12), width=250, wraplength=250, justify='center',
+            fg='black', command=lambda: open_news('google.com'), borderwidth=0)
+    b_window = canvas.create_window(1027, y, window=b, anchor='nw')
+    y += 110
+    news_labels.append(b)
+
+canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
+
+# Wishing User
+wish()
+
 
 
 WakeMsg = "wake up"
@@ -271,22 +285,5 @@ query = ''
 WakeRes = ['I am listening', 'Cheeky is ready',
            'What do you want?', 'On your command sir!']
 
-# THe main function
-if __name__ == '__main__':
 
-    # Make the gui
-    MainGUI()
-
-    while True:  # TODO - Move it to main function
-
-        print('Listening')  # TODO - print listening to a label not on console
-
-        query = TakeCommand().lower()
-
-        if query.count(WakeMsg) > 0:
-            r = random.choice(WakeRes)
-            speak(r)
-            try:
-                ProcessCommand(query)
-            except Exception:
-                pass
+root.mainloop()  # Mainloop method so that GUI is seen

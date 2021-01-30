@@ -130,6 +130,7 @@ dmypy.json
 
 #something else
 database.db
+.vscode
 db.sqlite3
 .vscode
 db.sqlite3-shm
