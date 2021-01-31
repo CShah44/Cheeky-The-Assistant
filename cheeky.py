@@ -23,6 +23,7 @@ canListen = False
 # Tkinter Initialization stuff
 root = Tk()
 root.title('Cheeky - The Assistant')  # Sets the title of the window
+root.iconbitmap('icon.ico')
 
 x = int((root.winfo_screenheight() / 2) - (root.winfo_height()/2))
 y = int((root.winfo_screenwidth() / 2) - (root.winfo_width()/2))
@@ -55,7 +56,7 @@ status_label = canvas.create_text(
 i = ImageTk.PhotoImage(Image.open("activate.png"))  # Image for activate button
 
 activate_button = Button(root, font=('Dosis SemiBold', 20), width=30,
-                         height=30, borderwidth=0.5, image=i, command=activate_cheeky)  # create the button
+                         height=30, borderwidth=0.5, image=i, command=lambda: activate_cheeky('e'))  # create the button
 activate_button_window = canvas.create_window(
     750, 42, window=activate_button)  # Show it on the canvas
 
@@ -93,7 +94,7 @@ def activate_cheeky(e):
     change_cheeky_status('Listening')
 
     query = take_command().lower()  # Get users command
-    speak('processing')  # TODO debug only
+    speak('processing')
     if query:
         process_command(query)  # Processing the command
 
@@ -244,8 +245,7 @@ def process_command(query):
     elif "locate" in query:
         query = query.replace("locate", "")
         location = query
-        speak("So, I am locating.. ")
-        speak(location)
+        speak("So, I am locating, " + location)
         webbrowser.open(
             "https://www.google.nl/maps/place/" + location + "")
     else:
@@ -254,11 +254,11 @@ def process_command(query):
             speak(reply)
             print_bot_reply(reply)
         except Exception:
-            return
+            pass
 
 
-root.bind('<KeyRelease-c>', deactivate_cheeky)
-root.bind('<KeyPress-c>', activate_cheeky)
+root.bind('<KeyRelease-q>', deactivate_cheeky)
+root.bind('<KeyPress-q>', activate_cheeky)
 
 # Creating the entry widget for user to type commands
 command_entry = Entry(root, font=('Dosis SemiBold', 20), width=39)
