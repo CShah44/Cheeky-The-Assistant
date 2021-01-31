@@ -35,7 +35,7 @@ canvas = Canvas(root)  # creating canvas for all widgets to be placed on it
 canvas.config(width=1300, height=650)  # set sizes of canvas
 
 # Specifying Background image path
-img = PhotoImage(file="E:\Timathon\BGTEST.png", master=root)
+img = PhotoImage(file="background.png", master=root)
 canvas.create_image(0, 0, image=img, anchor='nw')  # create background img
 
 
@@ -44,7 +44,6 @@ def open_readme():
         'https://github.com/CShah44/Cheeky-The-Assistant/blob/main/README.md')
 
 
-# TODO- It will open a new window
 about_help_button = Button(root, text='About/Help', font=(
     'Dosis SemiBold', 20), width=15, command=open_readme)  # Help and about button!
 about_help_button_window = canvas.create_window(
@@ -310,11 +309,5 @@ for index in range(0, 5):
 
 canvas.pack(fill='both', expand=True)  # Show the canvas on the screen
 
-# WakeMsg = "wake up"
-# query = ''
-# WakeRes = ['I am listening', 'Cheeky is ready',
-#
-#            'What do you want?', 'On your command sir!']
-# Wishing User
 wish()
 root.mainloop()
